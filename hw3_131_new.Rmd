@@ -1,0 +1,44 @@
+---
+title: "Homework 3"
+output: html_document
+date: '2022-04-16'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(tidymodels)
+library(ISLR) # For the Smarket data set
+library(ISLR2) # For the Bikeshare data set
+library(discrim)
+library(poissonreg)
+library(corrr)
+library(klaR) # for naive bayes
+tidymodels_prefer()
+```
+
+## Question 1
+
+```{r}
+titanic <- read.csv("~/Downloads/homework-3/data/titanic.csv")
+set.seed(2424)
+titanic_split <- initial_split(titanic, prop = 0.80,
+                                strata = survived)
+titanic_train <- training(titanic_split) 
+titanic_test <- testing(titanic_split)
+```
+It is a good idea to use stratifed sampling for this data since each subgroup of the given population is adequately represented within the whole sample population.
+
+
+## Question 2
+Using the training data set, explore/describe the distribution of the outcome variable survived.
+
+```{r}
+titanic_train %>% 
+  ggplot(aes(x = survived)) +
+  geom_bar()
+```
+
+The variable "survived" 

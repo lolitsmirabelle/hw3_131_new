@@ -484,8 +484,48 @@ log_wkflow &lt;- workflow() %&gt;%
   add_model(log_reg) %&gt;% 
   add_recipe(titanic_recipe)
 
-log_fit &lt;- fit(log_wkflow, titanic_train)
+log_fit &lt;- fit(log_wkflow, titanic_train)</code></pre>
+</div>
+<div id="question-6" class="section level2">
+<h2>Question 6</h2>
+<pre class="r"><code>lda_mod &lt;- discrim_linear() %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;MASS&quot;)
 
+lda_wkflow &lt;- workflow() %&gt;% 
+  add_model(lda_mod) %&gt;% 
+  add_recipe(titanic_recipe)
+
+lda_fit &lt;- fit(lda_wkflow, titanic_train)</code></pre>
+</div>
+<div id="question-7" class="section level2">
+<h2>Question 7</h2>
+<pre class="r"><code>qda_mod &lt;- discrim_quad() %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;MASS&quot;)
+
+qda_wkflow &lt;- workflow() %&gt;% 
+  add_model(qda_mod) %&gt;% 
+  add_recipe(titanic_recipe)
+
+qda_fit &lt;- fit(qda_wkflow, titanic_train)</code></pre>
+</div>
+<div id="question-8" class="section level2">
+<h2>Question 8</h2>
+<pre class="r"><code>nb_mod &lt;- naive_Bayes() %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;klaR&quot;) %&gt;% 
+  set_args(usekernel = FALSE) 
+
+nb_wkflow &lt;- workflow() %&gt;% 
+  add_model(nb_mod) %&gt;% 
+  add_recipe(titanic_recipe)
+
+nb_fit &lt;- fit(nb_wkflow, titanic_train)</code></pre>
+</div>
+<div id="question-9" class="section level2">
+<h2>Question 9</h2>
+<pre class="r"><code># Logistic Regression
 predict(log_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## # A tibble: 712 × 2
 ##    .pred_Yes .pred_No
@@ -514,19 +554,7 @@ log_reg_acc</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.805</code></pre>
-</div>
-<div id="question-6" class="section level2">
-<h2>Question 6</h2>
-<pre class="r"><code>lda_mod &lt;- discrim_linear() %&gt;% 
-  set_mode(&quot;classification&quot;) %&gt;% 
-  set_engine(&quot;MASS&quot;)
-
-lda_wkflow &lt;- workflow() %&gt;% 
-  add_model(lda_mod) %&gt;% 
-  add_recipe(titanic_recipe)
-
-lda_fit &lt;- fit(lda_wkflow, titanic_train)
-
+<pre class="r"><code># LDA
 predict(lda_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## # A tibble: 712 × 2
 ##    .pred_Yes .pred_No
@@ -555,19 +583,7 @@ lda_acc</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.803</code></pre>
-</div>
-<div id="question-7" class="section level2">
-<h2>Question 7</h2>
-<pre class="r"><code>qda_mod &lt;- discrim_quad() %&gt;% 
-  set_mode(&quot;classification&quot;) %&gt;% 
-  set_engine(&quot;MASS&quot;)
-
-qda_wkflow &lt;- workflow() %&gt;% 
-  add_model(qda_mod) %&gt;% 
-  add_recipe(titanic_recipe)
-
-qda_fit &lt;- fit(qda_wkflow, titanic_train)
-
+<pre class="r"><code># QDA
 predict(qda_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## # A tibble: 712 × 2
 ##    .pred_Yes .pred_No
@@ -596,20 +612,7 @@ qda_acc</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.796</code></pre>
-</div>
-<div id="question-8" class="section level2">
-<h2>Question 8</h2>
-<pre class="r"><code>nb_mod &lt;- naive_Bayes() %&gt;% 
-  set_mode(&quot;classification&quot;) %&gt;% 
-  set_engine(&quot;klaR&quot;) %&gt;% 
-  set_args(usekernel = FALSE) 
-
-nb_wkflow &lt;- workflow() %&gt;% 
-  add_model(nb_mod) %&gt;% 
-  add_recipe(titanic_recipe)
-
-nb_fit &lt;- fit(nb_wkflow, titanic_train)
-
+<pre class="r"><code># Naive Bayes
 predict(nb_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with
 ## observation 5</code></pre>
@@ -998,6 +1001,24 @@ predict(nb_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.784</code></pre>
+<pre class="r"><code>accuracies &lt;- c(log_reg_acc$.estimate, lda_acc$.estimate, 
+                nb_acc$.estimate, qda_acc$.estimate)
+models &lt;- c(&quot;Logistic Regression&quot;, &quot;LDA&quot;, &quot;Naive Bayes&quot;, &quot;QDA&quot;)
+results &lt;- tibble(accuracies = accuracies, models = models)
+results %&gt;% 
+  arrange(-accuracies)</code></pre>
+<pre><code>## # A tibble: 4 × 2
+##   accuracies models             
+##        &lt;dbl&gt; &lt;chr&gt;              
+## 1      0.805 Logistic Regression
+## 2      0.803 LDA                
+## 3      0.796 QDA                
+## 4      0.784 Naive Bayes</code></pre>
+<p>Out of all of the models, the model that achieved the highest
+accuracy was the logistic regression model.</p>
+</div>
+<div id="question-10" class="section level2">
+<h2>Question 10</h2>
 </div>
 
 

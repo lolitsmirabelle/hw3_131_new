@@ -90,15 +90,6 @@ log_wkflow <- workflow() %>%
   add_recipe(titanic_recipe)
 
 log_fit <- fit(log_wkflow, titanic_train)
-
-predict(log_fit, new_data = titanic_train, type = "prob")
-
-augment(log_fit, new_data = titanic_train) %>%
-  conf_mat(truth = survived, estimate = .pred_class)
-
-log_reg_acc <- augment(log_fit, new_data = titanic_train) %>%
-  accuracy(truth = survived, estimate = .pred_class)
-log_reg_acc
 ```
 
 ## Question 6
@@ -112,15 +103,6 @@ lda_wkflow <- workflow() %>%
   add_recipe(titanic_recipe)
 
 lda_fit <- fit(lda_wkflow, titanic_train)
-
-predict(lda_fit, new_data = titanic_train, type = "prob")
-
-augment(lda_fit, new_data = titanic_train) %>%
-  conf_mat(truth = survived, estimate = .pred_class) 
-
-lda_acc <- augment(lda_fit, new_data = titanic_train) %>%
-  accuracy(truth = survived, estimate = .pred_class)
-lda_acc
 ```
 
 
@@ -135,15 +117,6 @@ qda_wkflow <- workflow() %>%
   add_recipe(titanic_recipe)
 
 qda_fit <- fit(qda_wkflow, titanic_train)
-
-predict(qda_fit, new_data = titanic_train, type = "prob")
-
-augment(qda_fit, new_data = titanic_train) %>%
-  conf_mat(truth = survived, estimate = .pred_class) 
-
-qda_acc <- augment(qda_fit, new_data = titanic_train) %>%
-  accuracy(truth = survived, estimate = .pred_class)
-qda_acc
 ```
 
 
@@ -159,14 +132,52 @@ nb_wkflow <- workflow() %>%
   add_recipe(titanic_recipe)
 
 nb_fit <- fit(nb_wkflow, titanic_train)
+```
 
+
+## Question 9 
+```{r}
+# Logistic Regression
+predict(log_fit, new_data = titanic_train, type = "prob")
+augment(log_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class)
+log_reg_acc <- augment(log_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+log_reg_acc
+
+# LDA
+predict(lda_fit, new_data = titanic_train, type = "prob")
+augment(lda_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class) 
+lda_acc <- augment(lda_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+lda_acc
+
+# QDA
+predict(qda_fit, new_data = titanic_train, type = "prob")
+augment(qda_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class) 
+qda_acc <- augment(qda_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+qda_acc
+
+# Naive Bayes
 predict(nb_fit, new_data = titanic_train, type = "prob")
-
 augment(nb_fit, new_data = titanic_train) %>%
   conf_mat(truth = survived, estimate = .pred_class) 
-
 nb_acc <- augment(nb_fit, new_data = titanic_train) %>%
   accuracy(truth = survived, estimate = .pred_class)
 nb_acc
+
+accuracies <- c(log_reg_acc$.estimate, lda_acc$.estimate, 
+                nb_acc$.estimate, qda_acc$.estimate)
+models <- c("Logistic Regression", "LDA", "Naive Bayes", "QDA")
+results <- tibble(accuracies = accuracies, models = models)
+results %>% 
+  arrange(-accuracies)
 ```
+Out of all of the models, the model that achieved the highest accuracy was the logistic regression model. 
+
+
+## Question 10 
 

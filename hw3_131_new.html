@@ -525,8 +525,9 @@ nb_fit &lt;- fit(nb_wkflow, titanic_train)</code></pre>
 </div>
 <div id="question-9" class="section level2">
 <h2>Question 9</h2>
-<pre class="r"><code># Logistic Regression
-predict(log_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
+<div id="logistic-regression" class="section level3">
+<h3>Logistic Regression</h3>
+<pre class="r"><code>predict(log_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## # A tibble: 712 × 2
 ##    .pred_Yes .pred_No
 ##        &lt;dbl&gt;    &lt;dbl&gt;
@@ -554,8 +555,10 @@ log_reg_acc</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.805</code></pre>
-<pre class="r"><code># LDA
-predict(lda_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
+</div>
+<div id="lda" class="section level3">
+<h3>LDA</h3>
+<pre class="r"><code>predict(lda_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## # A tibble: 712 × 2
 ##    .pred_Yes .pred_No
 ##        &lt;dbl&gt;    &lt;dbl&gt;
@@ -583,8 +586,10 @@ lda_acc</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.803</code></pre>
-<pre class="r"><code># QDA
-predict(qda_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
+</div>
+<div id="qda" class="section level3">
+<h3>QDA</h3>
+<pre class="r"><code>predict(qda_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## # A tibble: 712 × 2
 ##    .pred_Yes .pred_No
 ##        &lt;dbl&gt;    &lt;dbl&gt;
@@ -612,8 +617,10 @@ qda_acc</code></pre>
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
 ## 1 accuracy binary         0.796</code></pre>
-<pre class="r"><code># Naive Bayes
-predict(nb_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
+</div>
+<div id="naive-bayes" class="section level3">
+<h3>Naive Bayes</h3>
+<pre class="r"><code>predict(nb_fit, new_data = titanic_train, type = &quot;prob&quot;)</code></pre>
 <pre><code>## Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with
 ## observation 5</code></pre>
 <pre><code>## Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with
@@ -1016,6 +1023,7 @@ results %&gt;%
 ## 4      0.784 Naive Bayes</code></pre>
 <p>Out of all of the models, the model that achieved the highest
 accuracy was the logistic regression model.</p>
+</div>
 </div>
 <div id="question-10" class="section level2">
 <h2>Question 10</h2>

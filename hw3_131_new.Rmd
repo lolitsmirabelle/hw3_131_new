@@ -136,39 +136,48 @@ nb_fit <- fit(nb_wkflow, titanic_train)
 
 
 ## Question 9 
+### Logistic Regression
 ```{r}
-# Logistic Regression
 predict(log_fit, new_data = titanic_train, type = "prob")
 augment(log_fit, new_data = titanic_train) %>%
   conf_mat(truth = survived, estimate = .pred_class)
 log_reg_acc <- augment(log_fit, new_data = titanic_train) %>%
   accuracy(truth = survived, estimate = .pred_class)
 log_reg_acc
+```
 
-# LDA
+### LDA 
+```{r}
 predict(lda_fit, new_data = titanic_train, type = "prob")
 augment(lda_fit, new_data = titanic_train) %>%
   conf_mat(truth = survived, estimate = .pred_class) 
 lda_acc <- augment(lda_fit, new_data = titanic_train) %>%
   accuracy(truth = survived, estimate = .pred_class)
 lda_acc
+```
 
-# QDA
+### QDA
+```{r}
 predict(qda_fit, new_data = titanic_train, type = "prob")
 augment(qda_fit, new_data = titanic_train) %>%
   conf_mat(truth = survived, estimate = .pred_class) 
 qda_acc <- augment(qda_fit, new_data = titanic_train) %>%
   accuracy(truth = survived, estimate = .pred_class)
 qda_acc
+```
 
-# Naive Bayes
+### Naive Bayes
+```{r}
 predict(nb_fit, new_data = titanic_train, type = "prob")
 augment(nb_fit, new_data = titanic_train) %>%
   conf_mat(truth = survived, estimate = .pred_class) 
 nb_acc <- augment(nb_fit, new_data = titanic_train) %>%
   accuracy(truth = survived, estimate = .pred_class)
 nb_acc
+```
 
+
+```{r}
 accuracies <- c(log_reg_acc$.estimate, lda_acc$.estimate, 
                 nb_acc$.estimate, qda_acc$.estimate)
 models <- c("Logistic Regression", "LDA", "Naive Bayes", "QDA")

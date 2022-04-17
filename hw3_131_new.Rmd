@@ -8,7 +8,7 @@ date: '2022-04-16'
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, echo=FALSE}
+```{r}
 library(tidymodels)
 library(ISLR) # For the Smarket data set
 library(ISLR2) # For the Bikeshare data set
@@ -23,13 +23,17 @@ tidymodels_prefer()
 
 ```{r}
 titanic <- read.csv("~/Downloads/homework-3/data/titanic.csv")
+titanic$survived <- factor(titanic$survived,levels=c('Yes', 'No'))
+titanic$pclass <- factor(titanic$pclass)
+
 set.seed(2424)
+
 titanic_split <- initial_split(titanic, prop = 0.80,
                                 strata = survived)
 titanic_train <- training(titanic_split) 
 titanic_test <- testing(titanic_split)
 ```
-It is a good idea to use stratifed sampling for this data since each subgroup of the given population is adequately represented within the whole sample population.
+It is a good idea to use stratified sampling for this data since each subgroup of the given population is adequately represented within the whole sample population.
 
 
 ## Question 2
@@ -41,4 +45,16 @@ titanic_train %>%
   geom_bar()
 ```
 
-The variable "survived" 
+We can see from the graph that there are much more people who did not survive versus those who did survive. 
+
+
+## Question 3
+
+```{r}
+cor_titanic_train <- titanic_train %>%
+  select(-c(survived, pclass, name, sex, ticket, cabin, embarked)) %>%
+  correlate()
+rplot(cor_titanic_train)
+```
+
+From the correlation matrix, we can see that sib_sp and age are negatively related, parch and age are negatively related, parch and sib_sp are positively related, fare and sib_sp are positively related, and fare and parch are positively related.

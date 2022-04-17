@@ -10,8 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidymodels)
-library(ISLR) # For the Smarket data set
-library(ISLR2) # For the Bikeshare data set
+library(ISLR) 
+library(ISLR2) 
 library(discrim)
 library(poissonreg)
 library(corrr)
@@ -189,4 +189,33 @@ Out of all of the models, the model that achieved the highest accuracy was the l
 
 
 ## Question 10 
+```{r}
+log_reg_test <- logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification")
+
+log_wkflow_test <- workflow() %>% 
+  add_model(log_reg_test) %>% 
+  add_recipe(titanic_recipe)
+
+log_fit_test <- fit(log_wkflow_test, titanic_test)
+
+predict(log_fit_test, new_data = titanic_test, type = "prob")
+augment(log_fit_test, new_data = titanic_test) %>%
+  conf_mat(truth = survived, estimate = .pred_class)
+log_reg_acc_test <- augment(log_fit_test, new_data = titanic_test) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+log_reg_acc_test
+```
+```{r}
+augment(log_fit_test, new_data = titanic_test) %>%
+  conf_mat(truth = survived, estimate = .pred_class) %>%
+  autoplot(type = "heatmap")
+```
+
+```{r}
+augment(log_fit_test, new_data = titanic_test) %>%
+  roc_curve(survived, .pred_Yes) %>%
+  autoplot()
+```
 

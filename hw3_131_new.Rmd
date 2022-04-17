@@ -58,3 +58,115 @@ rplot(cor_titanic_train)
 ```
 
 From the correlation matrix, we can see that sib_sp and age are negatively related, parch and age are negatively related, parch and sib_sp are positively related, fare and sib_sp are positively related, and fare and parch are positively related.
+
+
+## Question 4
+Using the training data, create a recipe predicting the outcome variable survived. Include the following predictors: ticket class, sex, age, number of siblings or spouses aboard, number of parents or children aboard, and passenger fare.
+
+Recall that there were missing values for age. To deal with this, add an imputation step using step_impute_linear(). Next, use step_dummy() to dummy encode categorical predictors. Finally, include interactions between:
+
+Sex and passenger fare, and
+Age and passenger fare.
+You’ll need to investigate the tidymodels documentation to find the appropriate step functions to use.
+```{r}
+titanic_recipe <- 
+  recipe(survived ~ ., data = titanic_train%>%select(survived, sex, age, sib_sp, pclass, fare, parch)) %>% 
+  step_impute_linear(age) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_interact(terms = ~ starts_with("sex"):fare + age:fare) %>%
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors())
+```
+
+
+## Question 5
+```{r}
+log_reg <- logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification")
+
+log_wkflow <- workflow() %>% 
+  add_model(log_reg) %>% 
+  add_recipe(titanic_recipe)
+
+log_fit <- fit(log_wkflow, titanic_train)
+
+predict(log_fit, new_data = titanic_train, type = "prob")
+
+augment(log_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class)
+
+log_reg_acc <- augment(log_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+log_reg_acc
+```
+
+## Question 6
+```{r}
+lda_mod <- discrim_linear() %>% 
+  set_mode("classification") %>% 
+  set_engine("MASS")
+
+lda_wkflow <- workflow() %>% 
+  add_model(lda_mod) %>% 
+  add_recipe(titanic_recipe)
+
+lda_fit <- fit(lda_wkflow, titanic_train)
+
+predict(lda_fit, new_data = titanic_train, type = "prob")
+
+augment(lda_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class) 
+
+lda_acc <- augment(lda_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+lda_acc
+```
+
+
+## Question 7
+```{r}
+qda_mod <- discrim_quad() %>% 
+  set_mode("classification") %>% 
+  set_engine("MASS")
+
+qda_wkflow <- workflow() %>% 
+  add_model(qda_mod) %>% 
+  add_recipe(titanic_recipe)
+
+qda_fit <- fit(qda_wkflow, titanic_train)
+
+predict(qda_fit, new_data = titanic_train, type = "prob")
+
+augment(qda_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class) 
+
+qda_acc <- augment(qda_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+qda_acc
+```
+
+
+## Question 8
+```{r}
+nb_mod <- naive_Bayes() %>% 
+  set_mode("classification") %>% 
+  set_engine("klaR") %>% 
+  set_args(usekernel = FALSE) 
+
+nb_wkflow <- workflow() %>% 
+  add_model(nb_mod) %>% 
+  add_recipe(titanic_recipe)
+
+nb_fit <- fit(nb_wkflow, titanic_train)
+
+predict(nb_fit, new_data = titanic_train, type = "prob")
+
+augment(nb_fit, new_data = titanic_train) %>%
+  conf_mat(truth = survived, estimate = .pred_class) 
+
+nb_acc <- augment(nb_fit, new_data = titanic_train) %>%
+  accuracy(truth = survived, estimate = .pred_class)
+nb_acc
+```
+

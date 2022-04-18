@@ -217,4 +217,10 @@ augment(log_fit_test, new_data = titanic_test) %>%
   autoplot()
 ```
 
+```{r}
+augment(log_fit, new_data = titanic_test)%>%
+  roc_auc(truth=survived,estimate=.pred_Yes)
+```
+
+
 The accuracy of the testing model was 0.8324022 which was higher than its training model which had an accuracy of 0.8047753.The values differ because training data is the initial dataset used to teach a machine learning application to recognize patterns, while testing data is used to evaluate the model's accuracy.
